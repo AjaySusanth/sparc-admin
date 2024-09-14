@@ -1,20 +1,35 @@
 import { useEffect, useState } from 'react'
-import qr from '../assets/qrcode.jpg'
+import qr from  "../assets/qrcode.jpg"
 import { supabase } from '../libs/helper/supabaseClient'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../libs/helper/AuthContext'
 import useMediaQuery from '../libs/helper/MediaQuery'
 
+const ticketOptions = {
+  'ieee': {
+    qrCode:qr,
+    UPI_LINK: 'upi://pay?pa=example@bank&pn=AjaySusanth&am=50&cu=INR&tn=IEEE%20Registration'
+  },
+  'non-ieee-mace': {
+    qrCode: qr,
+    UPI_LINK: 'upi://pay?pa=example2@bank&pn=AjaySusanth&am=100&cu=INR&tn=Non-IEEE%20Mace%20Registration'
+  },
+  'non-ieee': {
+    qrCode: qr,
+    UPI_LINK: 'upi://pay?pa=example3@bank&pn=AjaySusanth&am=150&cu=INR&tn=Non-IEEE%20Registration'
+  }
+}
+
+
 const Register = () => {
-
-
 
   const navigate = useNavigate()
   const [isRegistered,setIsRegistered] = useState(false)
   const [isVerified,setIsVerified] = useState(false)
   const [loading,setLoading] = useState(true)
   const [file,setFile] = useState(null)
-  const UPI_LINK = 'upi://pay?pa=8943460250@ptsbi&pn=AjaySusanth&am=100&cu=INR&tn=Sparc%20Registration%20Fee'
+  const [qrCode,setQrCode] = useState(null)
+  const [upiLink,setUpiLink] = useState(null)
 
 
   const isMobile = useMediaQuery('(max-width:768px')
@@ -54,6 +69,13 @@ const Register = () => {
   const handleChange = (e) =>{
     const {name,value} = e.target
     setFormData({...formData,[name]:value})
+    if (name === 'ticket') {
+      const ticket = ticketOptions[value]
+      if(ticket) {
+        setQrCode(ticket.qrCode)
+        setUpiLink(ticket.UPI_LINK)
+      }
+    }
   }
 
   const handleFileChange = async(e) => {
@@ -132,8 +154,7 @@ const Register = () => {
   if(isVerified) return <p>Already Verified</p>
   if(isRegistered) return <p>Already Registered</p>
 
-
-
+  
   return (
     <form className="flex flex-col justify-center items-center mt-16" onSubmit={handleSubmit}>
 
@@ -168,11 +189,16 @@ const Register = () => {
 
       <label>QR CODE</label>
       <div className="relative">
-        <img src={qr} className="size-52" alt="QR Code" />
-        {isMobile && (
+        {
+          qrCode ? <img src={qrCode} className="size-52" alt="QR Code" />
+          :
+          <div className='size-52 border p-3 flex justify-center items-center'><p>Select ticket to generate qrcode</p></div>
+        }
+        
+        {isMobile && upiLink && (
           <button
             type="button"
-            onClick={() => window.open(UPI_LINK, '_blank')}
+            onClick={() => window.open(upiLink, '_blank')}
             className="border p-2"
             aria-label="UPI Payment"
           >Pay via UPI APP</button>
