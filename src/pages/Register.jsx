@@ -28,10 +28,11 @@ const Register = () => {
   const [isVerified,setIsVerified] = useState(false)
   const [loading,setLoading] = useState(true)
   const [file,setFile] = useState(null)
+  const [error,setError] = useState("")
   const [qrCode,setQrCode] = useState(null)
   const [upiLink,setUpiLink] = useState(null)
 
-
+// Custom media query hook
   const isMobile = useMediaQuery('(max-width:768px')
 
 
@@ -42,6 +43,8 @@ const Register = () => {
   })
 
   const {user,loading:authLoading} = useAuth()
+
+  // Checking if user has already registered
   const checkRegistration = async() => {
   try {
     const {data,error} = await supabase
@@ -67,6 +70,7 @@ const Register = () => {
 
 }
   const handleChange = (e) =>{
+   
     const {name,value} = e.target
     setFormData({...formData,[name]:value})
     if (name === 'ticket') {
@@ -79,6 +83,7 @@ const Register = () => {
   }
 
   const handleFileChange = async(e) => {
+    setError("")
     const file = e.target.files[0]
     setFile(file)
   }
@@ -86,9 +91,18 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     let screenshotURL = null
+    
+
+    // Form validation
+    if (!formData.name || !formData.class || !formData.ticket  || !file)
+    {
+      setError('Please fill all the fields and upload the screenshot')
+      return;
+    }
 
     if(file) {
       const fileExtension = file.name.split('.').pop()
+      // creating custom file to access later
       const fileName = `${user.email}_${user.id}.${fileExtension}`
 
   
@@ -102,6 +116,7 @@ const Register = () => {
         return;
       }
 
+      // Fetching the file link from bucket to add it to the db
       screenshotURL = supabase.storage
       .from('screenshots')
       .getPublicUrl(fileName)
@@ -209,6 +224,9 @@ const Register = () => {
       <input type="file" name="screenshot" accept="image/*" onChange={handleFileChange} />
          
       <button type="submit" className="border w-32 mt-3">Submit</button>
+      {
+        error && <p className='text-red-600 text-basis'>{error}</p>
+      }
     </form>
   )
 }
