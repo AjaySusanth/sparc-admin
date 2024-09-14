@@ -3,15 +3,23 @@ import qr from '../assets/qrcode.jpg'
 import { supabase } from '../libs/helper/supabaseClient'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../libs/helper/AuthContext'
+import useMediaQuery from '../libs/helper/MediaQuery'
 
 const Register = () => {
+
+
 
   const navigate = useNavigate()
   const [isRegistered,setIsRegistered] = useState(false)
   const [isVerified,setIsVerified] = useState(false)
   const [loading,setLoading] = useState(true)
   const [file,setFile] = useState(null)
-  
+  const UPI_LINK = 'upi://pay?pa=8943460250@ptsbi&pn=AjaySusanth&am=100&cu=INR&tn=Sparc%20Registration%20Fee'
+
+
+  const isMobile = useMediaQuery('(max-width:768px')
+
+
   const [formData,setFormData] = useState({
     name:'',
     class:'',
@@ -159,7 +167,17 @@ const Register = () => {
       </select>
 
       <label>QR CODE</label>
-      <img src={qr} className='size-52'/>
+      <div className="relative">
+        <img src={qr} className="size-52" alt="QR Code" />
+        {isMobile && (
+          <button
+            type="button"
+            onClick={() => window.open(UPI_LINK, '_blank')}
+            className="border p-2"
+            aria-label="UPI Payment"
+          >Pay via UPI APP</button>
+        )}
+      </div>
 
       <label>Add screenshot</label>   
       <input type="file" name="screenshot" accept="image/*" onChange={handleFileChange} />
