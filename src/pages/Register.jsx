@@ -63,6 +63,7 @@ const Register = () => {
     }
   } catch (error) {
     console.error("Unexpected error",error.message)
+    setError("Unexpected error,try again later")
   }
   finally {
     setLoading(false)
@@ -70,7 +71,7 @@ const Register = () => {
 
 }
   const handleChange = (e) =>{
-   
+    setError("")
     const {name,value} = e.target
     setFormData({...formData,[name]:value})
     if (name === 'ticket') {
@@ -91,8 +92,8 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     let screenshotURL = null
+    setError("")
     
-
     // Form validation
     if (!formData.name || !formData.class || !formData.ticket  || !file)
     {
@@ -113,6 +114,7 @@ const Register = () => {
 
       if(uploadError) {
         console.log('Fileupload error',uploadError)
+        setError("Error uploading screenshot")
         return;
       }
 
@@ -123,7 +125,7 @@ const Register = () => {
       .data
       .publicUrl
 
-      console.log(screenshotURL)
+     // console.log(screenshotURL)
     } 
     try {
       const {data,error} = await supabase
@@ -142,6 +144,8 @@ const Register = () => {
 
       if(error) {
         console.log(error)
+        setError("Error submitting form,try again later")
+        return;
       }
       else{
         console.log("Registered successfully",data)
@@ -151,6 +155,7 @@ const Register = () => {
 
     } catch (error) {
       console.error("Submission error",error)
+      setError("Unexpected error,try again later")
     }
   }
 
