@@ -9,7 +9,15 @@ const Login = () => {
     const [error,setError] = useState(null)
     const [isRegisterIntent, setIsRegisterIntent] = useState(false);    
     const location = useLocation()
-    const navigate = useNavigate()
+    const navigate = useNavigate() 
+
+    const redirectUrl = import.meta.env.VITE_ENVIRONMENT=== 'production'
+    ? (isRegisterIntent 
+        ? 'https://sparc-admin.vercel.app/register' 
+        : 'https://sparc-admin.vercel.app/')
+    : (isRegisterIntent 
+        ? 'http://localhost:5173/register' 
+        : 'http://localhost:5173/');
     
     useEffect(() => {
     if (location.state?.toRegister) {
@@ -43,9 +51,7 @@ const Login = () => {
             const { data, error } = await supabase.auth.signInWithOAuth({
                 provider: 'google',
                 options: {
-                    redirectTo: isRegisterIntent
-                        ? 'http://localhost:5173/register'
-                        : 'http://localhost:5173/'
+                    redirectTo: redirectUrl
                 }
             })
 
@@ -59,6 +65,9 @@ const Login = () => {
     }
 
     console.log(isRegisterIntent)
+
+    console.log(import.meta.env.VITE_ENVIRONMENT)
+    console.log(redirectUrl)
 
   return (
     <div className="ml-3">
