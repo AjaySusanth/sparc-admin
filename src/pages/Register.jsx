@@ -8,15 +8,15 @@ import useMediaQuery from '../libs/helper/MediaQuery'
 const ticketOptions = {
   'ieee': {
     qrCode:qr,
-    UPI_LINK: 'upi://pay?pa=example@bank&pn=AjaySusanth&am=50&cu=INR&tn=IEEE%20Registration'
+    UPI_LINK: 'upi://pay?pa=8943460250@ptsbi&pn=AjaySusanth&am=50&cu=INR&tn=Sparc%20Registration'
   },
   'non-ieee-mace': {
     qrCode: qr,
-    UPI_LINK: 'upi://pay?pa=example2@bank&pn=AjaySusanth&am=100&cu=INR&tn=Non-IEEE%20Mace%20Registration'
+    UPI_LINK: 'upi://pay?pa=e8943460250@ptsbi&pn=AjaySusanth&am=100&cu=INR&tn=Sparc%20Registration'
   },
   'non-ieee': {
     qrCode: qr,
-    UPI_LINK: 'upi://pay?pa=example3@bank&pn=AjaySusanth&am=150&cu=INR&tn=Non-IEEE%20Registration'
+    UPI_LINK: 'upi://pay?pa=e8943460250@ptsbi&pn=AjaySusanth&am=150&cu=INR&tn=Sparc%20Registration'
   }
 }
 
@@ -154,7 +154,7 @@ const Register = () => {
   if(isVerified) return <p>Already Verified</p>
   if(isRegistered) return <p>Already Registered</p>
 
-  
+
   return (
     <form className="flex flex-col justify-center items-center mt-16" onSubmit={handleSubmit}>
 
