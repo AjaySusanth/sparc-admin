@@ -1,4 +1,4 @@
-/* pass - 2K92ITs5KZN9yuGu */
+
 import Login from "./pages/Login"
 import Signup from "./pages/Signup"
 import Home from "./pages/Home"
