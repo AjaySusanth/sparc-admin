@@ -44,8 +44,8 @@ const Login = () => {
                 provider: 'google',
                 options: {
                         redirectTo: isRegisterIntent
-                            ? "https://sparc-admin.vercel.app/register" //"http://localhost:5173/register"
-                            :  "https://sparc-admin.vercel.app/"//"http://localhost:5173/"
+                            ?  "https://sparc-admin.vercel.app/register"//"http://localhost:5173/register"
+                            :  "https://sparc-admin.vercel.app/"//"http://localhost:5173/" 
                 }
             })
 

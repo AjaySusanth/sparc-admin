@@ -1,12 +1,33 @@
-import { useState } from "react"
+import { useState,useEffect } from "react"
 import { supabase } from "../libs/helper/supabaseClient"
-import {Link} from 'react-router-dom'
+import {Link, useLocation, useNavigate} from 'react-router-dom'
 const Signup = () => {
 
     const [name,setName] = useState('')
     const [email,setEmail] = useState('')
     const [password,setPassword] = useState('')
     const [error,setError] = useState(null)
+    const [isRegisterIntent, setIsRegisterIntent] = useState(false);    
+    const location = useLocation()
+    const navigate = useNavigate() 
+    
+    useEffect(() => {
+    if (location.state?.toRegister) {
+        setIsRegisterIntent(location.state.toRegister);
+    }
+    }, [location]);
+
+    const handleOnClickLogin = ()=> {
+        if(isRegisterIntent) {
+            navigate('/login',{state:{toRegister:true}})
+        }
+        else {
+            navigate('/login',{state:{toRegister:false}})
+        }
+    }
+
+
+
     const handleSubmit = async(e) => {
         e.preventDefault()
         setError(null)
@@ -25,6 +46,8 @@ const Signup = () => {
                     throw error;
                 }
 
+                isRegisterIntent ? navigate('/register') : navigate('/')
+
                 if (data){
                     console.log("Sign up")
                 }
@@ -40,12 +63,18 @@ const Signup = () => {
         e.preventDefault()
         try {
             const { data, error } = await supabase.auth.signInWithOAuth({
-                provider: 'google'
+                provider: 'google',
+                options: {
+                    redirectTo: isRegisterIntent
+                        ?  "https://sparc-admin.vercel.app/register"//"http://localhost:5173/register"
+                        :  "https://sparc-admin.vercel.app/"//"http://localhost:5173/"
+            }
               })
         } catch (error) {
             
         }
         console.log('Google sign up')
+        console.log("Registerintent",isRegisterIntent)
     }
 
     return (
@@ -68,7 +97,7 @@ const Signup = () => {
                   </div>
                   {error && <p className="text-red-500">{error}</p>}
               </form>
-                <p>Already have an account? <Link to='/login'>Login</Link></p> 
+                <p onClick={handleOnClickLogin}>Already have an account?{" "}Login</p> 
           </div>
       </div>
     )

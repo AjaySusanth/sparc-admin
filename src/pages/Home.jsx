@@ -5,17 +5,24 @@ import { useEffect, useState } from "react"
 
 const Home = () => {
 
-  const {user} = useAuth()
+  const {user,loading:authLoading} = useAuth()
   const navigate = useNavigate()
   const [loading,setLoading] = useState(true)
 
-
+/*
   useEffect(()=>{
     console.log(user)
     if(user!==undefined){
       setLoading(false)
     }
-  },[user])
+  },[user])*/
+
+  useEffect(()=>{
+    console.log(user)
+    if(!authLoading)
+      setLoading(false)
+  },[authLoading])
+
 
   const handleLogout = async() => {
     try {
@@ -28,8 +35,8 @@ const Home = () => {
     }
   }
 
-  const handleLogin = ()=> {
-    navigate('/login',{state:{toRegister:false}})
+  const handleSignup = ()=> {
+    navigate('/signup',{state:{toRegister:false}})
   }
 
   const handleRegister = () => {
@@ -37,7 +44,7 @@ const Home = () => {
       navigate('/register')
     }
     else {
-      navigate('/login',{state:{toRegister:true}})
+      navigate('/signup',{state:{toRegister:true}})
     }
   }
 
@@ -46,12 +53,12 @@ const Home = () => {
   return (
     <div className="flex flex-col justify-center items-center">
         <div className="flex gap-x-5 my-5">
-            <button className="border p-2" onClick={()=>navigate("/signup")}>Signup</button>
+            
             {
               user ?
               <button className="border p-2" onClick={handleLogout}>Logout</button>
               :
-              <button className="border p-2" onClick={handleLogin}>Login</button>
+              <button className="border p-2" onClick={handleSignup}>Signup</button>
             }
         </div>
 

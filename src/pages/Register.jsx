@@ -12,11 +12,11 @@ const ticketOptions = {
   },
   'non-ieee-mace': {
     qrCode: qr,
-    UPI_LINK: 'upi://pay?pa=e8943460250@ptsbi&pn=AjaySusanth&am=100&cu=INR&tn=Sparc%20Registration'
+    UPI_LINK: 'upi://pay?pa=8943460250@ptsbi&pn=AjaySusanth&am=100&cu=INR&tn=Sparc%20Registration'
   },
   'non-ieee': {
     qrCode: qr,
-    UPI_LINK: 'upi://pay?pa=e8943460250@ptsbi&pn=AjaySusanth&am=150&cu=INR&tn=Sparc%20Registration'
+    UPI_LINK: 'upi://pay?pa=8943460250@ptsbi&pn=AjaySusanth&am=150&cu=INR&tn=Sparc%20Registration'
   }
 }
 
@@ -29,8 +29,10 @@ const Register = () => {
   const [loading,setLoading] = useState(true)
   const [file,setFile] = useState(null)
   const [error,setError] = useState("")
+  const [fileError,setFileError] = useState("")
   const [qrCode,setQrCode] = useState(null)
   const [upiLink,setUpiLink] = useState(null)
+
 
 // Custom media query hook
   const isMobile = useMediaQuery('(max-width:768px')
@@ -83,9 +85,23 @@ const Register = () => {
     }
   }
 
+  const maxFileSize = 400 * 1024 // 400kb
   const handleFileChange = async(e) => {
     setError("")
+    setFileError("")
     const file = e.target.files[0]
+    if(!file.type.startsWith("image/")) {
+      setFileError("Invalid file type, please upload an image")
+      setFile(null)
+      return;
+    }
+
+    // Handling file size limits
+    if(file.size > maxFileSize) {
+      setFileError("The uploaded file is too large. Please ensure it is under 400 KB")
+      setFile(null)
+      return;
+    }
     setFile(file)
   }
 
@@ -161,7 +177,7 @@ const Register = () => {
 
   useEffect(()=>{
     if(!user && !authLoading){
-      navigate('/login')
+      navigate('/signup')
     }
     else if (user)
     {
@@ -227,6 +243,9 @@ const Register = () => {
 
       <label>Add screenshot</label>   
       <input type="file" name="screenshot" accept="image/*" onChange={handleFileChange} />
+      {
+        fileError && <p className='text-red-600 text-basis'>{fileError}</p>
+      }
          
       <button type="submit" className="border w-32 mt-3">Submit</button>
       {
