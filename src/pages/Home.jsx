@@ -27,7 +27,7 @@ const Home = () => {
 
   const handleLogout = async() => {
     setError("")
-    if (user) {
+    if (!user) {
       setError("No user signed in")
       return;
     }
