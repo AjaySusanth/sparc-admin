@@ -8,6 +8,7 @@ const Home = () => {
   const {user,loading:authLoading} = useAuth()
   const navigate = useNavigate()
   const [loading,setLoading] = useState(true)
+  const [error,setError] = useState("")
 
 /*
   useEffect(()=>{
@@ -25,11 +26,17 @@ const Home = () => {
 
 
   const handleLogout = async() => {
+    setError("")
+    if (user) {
+      setError("No user signed in")
+      return;
+    }
     try {
       const { error } = await supabase.auth.signOut(); 
       if (error) throw error;
       else console.log("Logout successfull")
     } catch (error) {
+      setError("Unexpected error,try again later")
       console.log(error)
       console.error(error.meessage)
     }
@@ -63,6 +70,10 @@ const Home = () => {
         </div>
 
         <button onClick={handleRegister}>Register</button>
+
+        {
+          error && <p className='text-red-600 text-basis'>{error}</p>
+        }
     </div>
 
   )
